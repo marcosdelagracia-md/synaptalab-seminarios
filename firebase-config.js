@@ -1,7 +1,7 @@
 // Configuração pública do aplicativo Web do projeto synapta-seminarios.
 // Nunca adicione senha, chave privada ou credenciais de conta de serviço.
 export const firebaseConfig = {
-  apiKey: 'AIzaSyDWqPPM87B3C2k0yRcbGhy_je58avPww5M',
+  apiKey: 'AIzaSyDWqPPM87B3C2k0vRcbGhy_je58avRwW5M',
   authDomain: 'synapta-seminarios.firebaseapp.com',
   projectId: 'synapta-seminarios',
   storageBucket: 'synapta-seminarios.firebasestorage.app',
