@@ -1,0 +1,21 @@
+SynaptaLab - Teste de acesso administrativo (Firebase Spark)
+
+OBJETIVO
+Validar login com e-mail/senha e leitura de seminarios_admins/{UID} com active=true.
+Este pacote NAO modifica regras, nao cadastra alunos, nao publica dados clinicos e nao requer Cloud Functions.
+
+COMO TESTAR
+1. Extraia os arquivos juntos na mesma pasta.
+2. Publique estes tres arquivos em uma pasta NOVA e ISOLADA do GitHub Pages, por exemplo teste-professor/. Nao substitua os arquivos de outros laboratorios.
+3. Acesse o endereco HTTPS publicado no navegador.
+4. Entre com o e-mail e senha que voce cadastrou no Firebase Authentication. Nao compartilhe sua senha.
+5. Se aparecer "Acesso administrativo reconhecido", a autenticacao e a leitura do documento foram validadas.
+
+ATENCAO
+- Abrir index.html com dois cliques (file://) nao e um teste confiavel de autenticacao. Use HTTPS no GitHub Pages ou servidor HTTP local.
+- O dominio marcosdelagracia-md.github.io ja foi autorizado, conforme a captura fornecida.
+- As regras publicadas devem permitir get do proprio documento em seminarios_admins e negar outras operacoes.
+- O codigo firebaseConfig e publico, nao e senha; restrinja a API key aos servicos necessarios se usar restricoes no Google Cloud.
+- Nao publique documentos de professor, gabaritos ou dados clinicos em repositorios publicos.
+- O app original v5 foi desenhado para alunos e exige seminarios_users; este teste separado resolve a primeira verificacao de professor.
+- Nao foi possivel testar login remoto com suas credenciais, que permanecem privadas.

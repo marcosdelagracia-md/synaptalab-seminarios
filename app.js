@@ -1,0 +1,13 @@
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+import {getFirestore,doc,getDoc} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+import {firebaseConfig} from './firebase-config.js';
+const firebaseApp=initializeApp(firebaseConfig);
+const auth=getAuth(firebaseApp);
+const db=getFirestore(firebaseApp);
+const el=id=>document.getElementById(id);
+const status=(message,error=false)=>{el('status').textContent=message;el('status').className=error?'error':'ok'};
+let seq=0;
+el('enter').onclick=async()=>{el('enter').disabled=true;status('Verificando autenticação...');try{await signInWithEmailAndPassword(auth,el('email').value.trim(),el('password').value)}catch(e){status(`Não foi possível entrar: ${e.code||e.message}`,true)}finally{el('enter').disabled=false;el('password').value=''}};
+el('exit').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async user=>{const current=++seq;el('teacher').classList.add('hidden');el('login').classList.remove('hidden');if(!user){status('Entre com sua conta de professor.');return}status('Login realizado. Conferindo autorização no Firestore...');try{const snap=await getDoc(doc(db,'seminarios_admins',user.uid));if(current!==seq)return;if(!snap.exists()||snap.data().active!==true){status('Conta autenticada, mas sem cadastro administrativo ativo.',true);await signOut(auth);return}el('uid').textContent=user.uid;el('login').classList.add('hidden');el('teacher').classList.remove('hidden');status('Teste concluído: acesso administrativo validado.')}catch(e){if(current!==seq)return;status(`Login realizado, mas a leitura do Firestore falhou: ${e.code||e.message}`,true)}});
