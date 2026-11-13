@@ -62,7 +62,7 @@ $('seed').onclick = async () => {
       await batch.commit();
     }
 
-    msg(`Verificação concluída. ${changes} grupo(s) inicializado(s).`);
+    alert(`Verificação concluída. ${changes} grupo(s) inicializado(s).`);
     await teacherData();
 
   } catch (error) {
