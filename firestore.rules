@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function signed() { return request.auth != null; }
+  function admin() { return signed() && exists(/databases/$(database)/documents/seminarios_admins/$(request.auth.uid)) && get(/databases/$(database)/documents/seminarios_admins/$(request.auth.uid)).data.active == true; }
+  function own(uid) { return signed() && request.auth.uid == uid; }
+  function enrolled() { return signed() && exists(/databases/$(database)/documents/seminarios_students/$(request.auth.uid)) && get(/databases/$(database)/documents/seminarios_students/$(request.auth.uid)).data.active == true; }
+  function groupOf(uid) { return get(/databases/$(database)/documents/seminarios_students/$(uid)).data.group; }
+  function validGroup(g) { return g is int && g >= 1 && g <= 6; }
+  function groupPath(g) { return /databases/$(database)/documents/seminarios_groups/$(g); }
+  match /seminarios_admins/{uid} {
+   allow get: if own(uid);
+   allow list, create, update, delete: if false;
+  }
+  match /seminarios_codes/{code} {
+   allow get, list: if admin();
+   allow create: if admin() && code.matches('PSI(00[1-9]|0[1-5][0-9]|060)')
+     && request.resource.data.keys().hasOnly(['uid']) && request.resource.data.uid is string;
+   allow update, delete: if false;
+  }
+  match /seminarios_students/{uid} {
+   allow get: if admin() || own(uid);
+   allow list: if admin();
+   allow create: if admin()
+     && request.resource.data.keys().hasAll(['uid','name','email','code','group','active'])
+     && request.resource.data.keys().hasOnly(['uid','name','email','code','group','active'])
+     && request.resource.data.uid == uid && request.resource.data.name is string
+     && request.resource.data.name.size() >= 5 && request.resource.data.name.size() <= 120
+     && request.resource.data.email is string && request.resource.data.email.size() <= 254
+     && request.resource.data.code.matches('PSI(00[1-9]|0[1-5][0-9]|060)')
+     && request.resource.data.group == null && request.resource.data.active == true
+     && getAfter(/databases/$(database)/documents/seminarios_codes/$(request.resource.data.code)).data.uid == uid;
+   // A student may join only once, through an atomic batch updating the group roster.
+   allow update: if own(uid) && resource.data.active == true && resource.data.group == null
+     && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['group'])
+     && validGroup(request.resource.data.group)
+     && getAfter(groupPath(request.resource.data.group)).data.members[uid] == true
+     || admin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['active']);
+   allow delete: if false;
+  }
+  match /seminarios_groups/{gid} {
+   allow get: if admin() || enrolled();
+   allow list: if admin();
+   allow create: if admin() && gid.matches('[1-6]')
+     && request.resource.data.keys().hasOnly(['members','caseId'])
+     && request.resource.data.keys().hasAll(['members','caseId'])
+     && request.resource.data.members == {} && request.resource.data.caseId == gid;
+   allow update: if admin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members'])
+       && request.resource.data.members is map && request.resource.data.members.keys().size() <= 10
+     || enrolled() && resource.data.members is map && request.resource.data.members is map
+       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members'])
+       && request.resource.data.members.diff(resource.data.members).addedKeys().hasOnly([request.auth.uid])
+       && request.resource.data.members.diff(resource.data.members).addedKeys().hasAll([request.auth.uid])
+       && request.resource.data.members.diff(resource.data.members).changedKeys().size() == 0
+       && request.resource.data.members.diff(resource.data.members).removedKeys().size() == 0
+       && request.resource.data.members[request.auth.uid] == true
+       && request.resource.data.members.keys().size() <= 10
+       && groupOf(request.auth.uid) == null
+       && getAfter(/databases/$(database)/documents/seminarios_students/$(request.auth.uid)).data.group == int(gid);
+   allow delete: if false;
+  }
+  // Each student can access only their own individual submissions.
+  match /seminarios_submissions/{uid}/items/{itemId} {
+   allow get, list: if admin() || (own(uid) && enrolled());
+   allow create: if own(uid) && enrolled() && validGroup(groupOf(uid))
+     && itemId.matches('checkpoint[1-5]|sintese')
+     && request.resource.data.keys().hasOnly(['text','group','createdAt'])
+     && request.resource.data.text is string && request.resource.data.text.size() >= 20
+     && request.resource.data.text.size() <= 12000
+     && request.resource.data.group == groupOf(uid)
+     && request.resource.data.createdAt == request.time;
+   allow update, delete: if false;
+  }
+  // Teacher-owned case contents, restricted to the assigned group.
+  match /seminarios_cases/{caseId} {
+   allow get: if admin() || (enrolled() && validGroup(groupOf(request.auth.uid))
+     && caseId == string(groupOf(request.auth.uid)));
+   allow list: if admin();
+   allow create, update, delete: if admin();
+  }
+  match /{document=**} { allow read, write: if false; }
+ }
+}
