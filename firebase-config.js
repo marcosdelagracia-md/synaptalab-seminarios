@@ -1,5 +1,4 @@
-// Configuração pública do Firebase Web. Não insira senhas ou chaves de serviço.
-// Substitua os campos pelos valores do seu aplicativo Firebase registrado.
+// Configuração pública do Firebase Web. Nunca coloque senhas ou chaves privadas aqui.
 export const firebaseConfig = {
   apiKey: 'AIzaSyDWqPPM87B3C2k0vRcbGhy_je58avRwW5M',
   authDomain: 'synapta-seminarios.firebaseapp.com',

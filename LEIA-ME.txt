@@ -1,21 +1,20 @@
-SynaptaLab - Teste de acesso administrativo (Firebase Spark)
+SYNAPTALAB | LAB SEMINÁRIOS CLÍNICOS — VERSÃO DE TESTE
 
-OBJETIVO
-Validar login com e-mail/senha e leitura de seminarios_admins/{UID} com active=true.
-Este pacote NAO modifica regras, nao cadastra alunos, nao publica dados clinicos e nao requer Cloud Functions.
+1. No GitHub, substitua index.html, app.js e firebase-config.js pelos arquivos deste pacote.
+2. No Firebase Console > Firestore Database > Regras, substitua o conteúdo por firestore.rules e clique em Publicar.
+3. Em Firebase Console > Authentication > Sign-in method, habilite Email/Password.
+4. Em Authentication > Settings > Authorized domains, confira o domínio do seu GitHub Pages (sem https://).
+5. Preserve a coleção seminarios_admins e os seis documentos de seminarios_groups. Cada grupo deve ter caseId como string "1" a "6" e members como map. Para grupo 1, remova o campo indevido members.caseId se ainda existir; não remova membros reais.
+6. Teste com conta NOVA de estudante e e-mail que você controla. O sistema atribui o próximo código PSI livre e permite escolher grupo.
+7. Como PSI001 já pertence a Marreta Teste, o próximo código esperado é PSI002.
+8. Teste o painel do professor, a edição de caso e etapas, a submissão sequencial, o bloqueio de leitura de casos alheios e a transferência de um estudante de um grupo a outro.
+9. Não divulgue o link à turma antes de testar regras e permissões no Firebase Rules Playground ou Emulator.
 
-COMO TESTAR
-1. Extraia os arquivos juntos na mesma pasta.
-2. Publique estes tres arquivos em uma pasta NOVA e ISOLADA do GitHub Pages, por exemplo teste-professor/. Nao substitua os arquivos de outros laboratorios.
-3. Acesse o endereco HTTPS publicado no navegador.
-4. Entre com o e-mail e senha que voce cadastrou no Firebase Authentication. Nao compartilhe sua senha.
-5. Se aparecer "Acesso administrativo reconhecido", a autenticacao e a leitura do documento foram validadas.
-
-ATENCAO
-- Abrir index.html com dois cliques (file://) nao e um teste confiavel de autenticacao. Use HTTPS no GitHub Pages ou servidor HTTP local.
-- O dominio marcosdelagracia-md.github.io ja foi autorizado, conforme a captura fornecida.
-- As regras publicadas devem permitir get do proprio documento em seminarios_admins e negar outras operacoes.
-- O codigo firebaseConfig e publico, nao e senha; restrinja a API key aos servicos necessarios se usar restricoes no Google Cloud.
-- Nao publique documentos de professor, gabaritos ou dados clinicos em repositorios publicos.
-- O app original v5 foi desenhado para alunos e exige seminarios_users; este teste separado resolve a primeira verificacao de professor.
-- Nao foi possivel testar login remoto com suas credenciais, que permanecem privadas.
+LIMITAÇÕES IMPORTANTES
+- Esta versão não inclui duplas, laudo colaborativo, rubrica ICA/IPC, relatório PDF, auditoria imutável nem verificação de e-mail obrigatória.
+- A atribuição de códigos depende de tentativas de criação atômica no Firestore. O limite de 60 é imposto pela regex de códigos e pela criação exclusiva dos documentos.
+- Contas criadas no Authentication cujo registro Firestore falhe precisarão de recuperação administrativa; não há recuperação automática implementada.
+- O professor pode bloquear acesso pelo Firestore, mas isso não desativa a conta no Firebase Authentication.
+- Não use dados clínicos reais; os casos são simulados.
+- Spark gratuito possui cotas de leitura/escrita. O aplicativo não usa Cloud Functions.
+- Não confundir publicação do GitHub com publicação das regras Firestore: são duas operações distintas.
