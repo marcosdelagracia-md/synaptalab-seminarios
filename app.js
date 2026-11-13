@@ -66,10 +66,7 @@ $('seed').onclick = async () => {
     await teacherData();
 
   } catch (error) {
-    msg(
-      'Erro na inicialização: ' + (error.code || error.message),
-      true
-    );
+    alert('Erro na inicialização: ' + (error.code || error.message));
   } finally {
     button.disabled = false;
   }
