@@ -31,7 +31,7 @@ function cleanRich(markup){
  const source=new DOMParser().parseFromString('<div>'+String(markup||'')+'</div>','text/html').body.firstElementChild;
  const dest=document.createElement('div');
  function walk(node,parent){
-  if(node.nodeType===Node.TEXT_NODE){parent.appendChild(document.createTextNode(node.textContent));return}
+  if(node.nodeType===Node.TEXT_NODE){parent.appendChild(document.createTextNode((node.textContent||'').replace(/\u00a0/g,' ')));return}
   if(node.nodeType!==Node.ELEMENT_NODE)return;
   const tag=node.tagName;
   if(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','SVG','MATH','FORM','INPUT','BUTTON','VIDEO','AUDIO','LINK','META'].includes(tag))return;
@@ -44,11 +44,40 @@ function cleanRich(markup){
   }
   if(tag==='TH'||tag==='TD')for(const attr of ['colspan','rowspan']){const n=Number(node.getAttribute(attr));if(Number.isInteger(n)&&n>=1&&n<=12)el.setAttribute(attr,String(n))}
   if(tag!=='IMG')for(const child of [...node.childNodes])walk(child,el);
+  // Descarta blocos realmente vazios criados pelo Word, sem apagar imagens ou células.
+  if(['P','DIV','H2','H3','H4','BLOCKQUOTE'].includes(tag) &&
+     !el.querySelector('img,table,ul,ol') &&
+     !(el.textContent||'').replace(/[\s\u200b\ufeff]/g,'').length &&
+     !el.querySelector('br'))return;
   parent.appendChild(el)
  }
  for(const child of [...source.childNodes])walk(child,dest);
+ // Remove linhas vazias repetidas, preservando uma quebra quando intencional.
+ for(const el of dest.querySelectorAll('p,div,h2,h3,h4,blockquote')){
+   const brs=[...el.children].filter(x=>x.tagName==='BR');
+   if(brs.length && !(el.textContent||'').trim() && !el.querySelector('img,table')){
+     if(el.parentElement && el.parentElement!==dest)el.remove();
+     else el.remove();
+   }
+ }
  return dest.innerHTML
 }
+// Estilos isolados para documentos, sem interferir nos formulários e tabelas administrativas.
+const clinicalStyle=document.createElement('style');
+clinicalStyle.textContent=`
+.rich-content,.rich-preview,.rich-editor{max-width:100%;min-width:0;overflow-wrap:break-word;line-height:1.55}
+.rich-content p,.rich-preview p,.rich-editor p{margin:.45em 0 .8em;max-width:100%;white-space:normal}
+.rich-content div,.rich-preview div,.rich-editor div{max-width:100%}
+.rich-content h2,.rich-content h3,.rich-content h4,.rich-preview h2,.rich-preview h3,.rich-preview h4{margin:1em 0 .45em;line-height:1.3}
+.rich-content img,.rich-preview img,.rich-editor img{display:block;max-width:100%;height:auto;object-fit:contain;margin:.7em auto}
+.rich-content table,.rich-preview table,.rich-editor table{width:100%;max-width:100%;border-collapse:collapse;table-layout:auto;margin:1em 0;font-size:.95em}
+.rich-content th,.rich-content td,.rich-preview th,.rich-preview td,.rich-editor th,.rich-editor td{border:1px solid #b5ccc0;padding:8px;vertical-align:top;overflow-wrap:anywhere;white-space:normal}
+.rich-content ul,.rich-content ol,.rich-preview ul,.rich-preview ol{padding-left:1.5em}
+.rich-content blockquote,.rich-preview blockquote{margin:.8em 0;padding:.3em 1em;border-left:3px solid #278762}
+.rich-content,.rich-preview{overflow-x:auto}
+`;
+document.head.appendChild(clinicalStyle);
+
 function countRichImages(html){const x=document.createElement('div');x.innerHTML=cleanRich(html);return x.querySelectorAll('img').length}
 function richPlain(html){const x=document.createElement('div');x.innerHTML=cleanRich(html);return (x.textContent||'').trim()}
 function validateRich(html){const safe=cleanRich(html);if(countRichImages(safe)>3)throw Error('Máximo de três imagens por documento.');if(new TextEncoder().encode(safe).length>450000)throw Error('Documento formatado acima de 450 KB. Reduza as imagens.');return safe}
