@@ -1,0 +1,11 @@
+SynaptaLab — atualização pontual de recuperação de acesso.
+
+Este arquivo adiciona Esqueci minha senha ao formulário de login, mensagens para e-mail já cadastrado e alerta para conta autenticada sem perfil acadêmico.
+
+NÃO elimina contas duplicadas, NÃO recupera automaticamente perfis órfãos, NÃO corrige regras Firestore e NÃO garante que um mesmo indivíduo não crie contas com e-mails diferentes.
+
+Não altera nem exclui documentos do Firebase.
+
+ATENÇÃO: o app.js de origem era uma versão de HOMOLOGAÇÃO com pendências de privacidade dos rascunhos e regras. Não publique este arquivo na turma antes de testar em ambiente separado e validar as regras.
+
+Para investigar 125 contas: exporte de forma segura lista de UIDs/e-mails do Authentication e compare com seminarios_students e seminarios_codes em ambiente administrativo, sem expor dados pessoais publicamente.
