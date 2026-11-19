@@ -1,0 +1,13 @@
+SynaptaLab — PACOTE DE HOMOLOGAÇÃO (NÃO PUBLICAR DIRETAMENTE)
+
+Arquivos: synaptalab_app_TESTE.js e synaptalab_firestore_TESTE.rules.
+
+Atenção: a versão JavaScript prévia mantém o campo analysis dentro dos documentos tasks. Como as tarefas são legíveis para integrantes do grupo, os rascunhos ainda podem ser lidos antes da publicação, inclusive via SDK. A proteção de rascunhos NÃO está concluída.
+
+Também falta validar as regras no Firebase Emulator, especialmente as operações de cadastro atômico, autorização docente de trios, liberação do laudo e fluxo de revisão. NÃO implantar na turma sem esses testes.
+
+Este pacote preserva os dados existentes, pois não contém rotinas de exclusão/migração. Faça backup antes de qualquer implantação.
+
+Mudanças nas regras: PSI001–PSI070; grupos de até 12; equipes até 3 com ingresso voluntário limitado a 2; coleções publications, teacher_messages e workflow/final_report.
+
+O JavaScript incluso é a versão atualizada já existente na conversa, não a versão antiga do GitHub.
