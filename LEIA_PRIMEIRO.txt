@@ -1,0 +1,7 @@
+SynaptaLab - selecao das cinco etapas.
+Base: app_synaptalab_recuperacao.js.
+A selecao aparece antes dos documentos; identifica integrantes e vagas; somente professor adiciona terceiro integrante.
+IMPORTANTE: nao publicar em producao sem testar com as regras atuais do Firestore.
+A versao herdada ainda tem risco de exposicao de rascunhos nas regras: membros do grupo podem ler analysis antes da publicacao. Requer migracao para colecao privada antes de uso com dados reais.
+O botao de escolha so aparece quando evaluationOpen=true e estudante possui grupo.
+Preserva cadastros e casos; nao executa exclusoes nem migracoes.
