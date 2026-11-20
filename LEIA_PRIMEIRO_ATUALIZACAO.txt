@@ -1,0 +1,14 @@
+SynaptaLab — atualização de cadastro pendente e recuperação
+
+1. Faça backup do app.js e das regras atuais (já confirmado pelo professor).
+2. No GitHub, SUBSTITUA o conteúdo do arquivo principal app.js pelo app.js deste pacote. Não renomeie o arquivo.
+3. No Firebase Console > Firestore Database > Regras, SUBSTITUA as regras pelas de firestore.rules deste pacote e clique Publicar.
+4. Espere o GitHub Pages publicar. Teste em janela anônima e recarregue a página.
+5. Com o cadastro ABERTO, um estudante que já possui login no Authentication mas não possui perfil em seminarios_students poderá entrar, informar seu nome, aceitar as instruções e concluir o perfil usando o MESMO UID.
+6. O novo perfil ficará active:false e aparecerá como pendente no painel do professor. Somente o professor deve ativá-lo.
+7. Verifique se o código PSI foi criado em seminarios_codes e se o documento em seminarios_students corresponde ao mesmo UID.
+8. Teste primeiro com UMA conta incompleta real, sem criar outra conta, e valide no painel antes de avisar a turma.
+
+ATENÇÃO: O limite de 70 é para perfis acadêmicos, não para o total de contas Authentication. Contas sem perfil não são listadas automaticamente no painel. As regras não permitem que usuários consultem códigos PSI de outras pessoas. Se a reserva falhar, não apague registros; anote a mensagem e verifique as regras publicadas.
+
+Esta atualização NÃO apaga cadastros, NÃO altera a seleção das cinco etapas, NÃO ativa alunos automaticamente e NÃO elimina duplicatas antigas do Authentication.
