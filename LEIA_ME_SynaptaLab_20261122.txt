@@ -1,0 +1,27 @@
+SynaptaLab — ajuste de cadastro e aceite — 22/11/2026
+
+ARQUIVO PARA PUBLICAR
+SynaptaLab_app_corrigido_20261122.js -> substituir o conteúdo de app.js no repositório GitHub Pages, mantendo o nome app.js.
+
+REGRAS FIRESTORE
+O arquivo de regras enviado foi analisado. Nenhuma alteração de regras é necessária para este ajuste específico: a regra atual permite que o próprio usuário crie seu aceite de instruções quando já possui perfil acadêmico. NÃO publique regras mais antigas.
+
+O QUE FOI CORRIGIDO
+1. Para perfil acadêmico existente, o aceite das instruções é solicitado antes da tela de aprovação, inclusive quando active=false. Isso resolve o status 'Pendente' após o estudante aceitar pelo próprio login.
+2. O painel diferencia 'Aceite das instruções' de 'Situação da conta'.
+3. A recuperação de conta Authentication sem perfil permanece disponível quando o professor libera Cadastro; exige nome completo e aceite e cria o PSI, mas não ativa automaticamente o aluno.
+4. Nenhum dado Firestore é apagado ou migrado por este arquivo.
+
+COMO TESTAR
+1. Faça backup do app.js atual do GitHub.
+2. Substitua o conteúdo de app.js pelo arquivo entregue e faça commit.
+3. No painel docente, libere Cadastro TEMPORARIAMENTE se houver alunos com Authentication mas sem perfil. Atenção: essa fase pode fechar a escolha/avaliação por desenho do sistema. Coordene o momento da liberação.
+4. Peça ao aluno para entrar com e-mail e senha EXISTENTES. Se não houver perfil, ele verá 'Concluir cadastro acadêmico'; informe nome completo e aceite instruções. Se já houver perfil sem aceite, ele verá 'Confirmação das instruções'.
+5. Atualize o painel docente e confira o PSI, aceite e status de aprovação. Use 'Ativar' apenas depois de conferir o estudante.
+6. Se ainda ocorrer permission-denied, NÃO crie outra conta. Registre o UID, o código PSI tentado e o erro do console do navegador.
+
+LIMITES / OBSERVAÇÕES
+- A atribuição de PSI é automática no cadastro acadêmico, mas a aprovação docente continua manual.
+- O sistema não reconcilia automaticamente documentos de seminarios_codes órfãos criados manualmente; esses registros precisam ser auditados separadamente.
+- O campo 'Pendente' não é sinônimo de conta bloqueada.
+- Não foi executado teste integrado com Firebase de produção; apenas validação sintática local.
