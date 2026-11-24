@@ -170,6 +170,20 @@ async function teacher(){const w=$('workspace');w.innerHTML=`<div class="card"><
    const byCode=new Map(codes.docs.map(d=>[d.id,d.data().uid]));
    const byUid=new Map(students.docs.map(d=>[d.id,d.data()]));
    const problems=[];
+   // Diagnóstico PSI058: somente leitura, sem alterar documentos.
+   const psi058Profiles=students.docs.filter(d=>d.data().code==='PSI058');
+   const psi058Reservation=codes.docs.find(d=>d.id==='PSI058');
+   const diagnostic058={
+     perfisEncontrados:psi058Profiles.length,
+     uidDocumento:psi058Profiles[0]?.id??null,
+     uidCampo:psi058Profiles[0]?.data().uid??null,
+     uidReserva:psi058Reservation?.data().uid??null,
+     reservaExiste:!!psi058Reservation,
+     correspondencia:psi058Profiles.length===1&&psi058Profiles[0].id===psi058Reservation?.data().uid,
+     tamanhoUidDocumento:psi058Profiles[0]?.id.length??null,
+     tamanhoUidReserva:typeof psi058Reservation?.data().uid==='string'?psi058Reservation.data().uid.length:null,
+     reservaUidTemPerfil:byUid.has(psi058Reservation?.data().uid)
+   };
    for(const d of students.docs){const s=d.data(),code=s.code;
     if(s.uid!==d.id)problems.push(`${code||'SEM CÓDIGO'}: UID do documento divergente`);
     if(!/^PSI(00[1-9]|0[1-6][0-9]|070)$/.test(String(code||'')))problems.push(`${code||'SEM CÓDIGO'}: código fora do intervalo`);
@@ -177,7 +191,7 @@ async function teacher(){const w=$('workspace');w.innerHTML=`<div class="card"><
     try{const consent=await getDoc(consentRef(d.id));if(!consent.exists()||consent.data().accepted!==true||consent.data().version!==INSTRUCTIONS_VERSION)problems.push(`${code||'SEM CÓDIGO'}: aceite acadêmico ausente/inválido`)}catch(e){problems.push(`${code||'SEM CÓDIGO'}: falha ao consultar aceite (${error(e)})`)}
    }
    for(const d of codes.docs){if(!byUid.has(d.data().uid))problems.push(`${d.id}: reserva sem perfil acadêmico`)}
-   out.textContent=`Perfis: ${students.size} | Reservas: ${codes.size} | Alertas: ${problems.length}\n`+(problems.length?problems.join('\n'):'Nenhuma inconsistência encontrada nas coleções verificadas.')+'\n\nObservação: esta verificação não consulta contas do Firebase Authentication.';
+   out.textContent=`Perfis: ${students.size} | Reservas: ${codes.size} | Alertas: ${problems.length}\n`+(problems.length?problems.join('\n'):'Nenhuma inconsistência encontrada nas coleções verificadas.')+'\n\nDIAGNÓSTICO PSI058 (somente leitura):\n'+JSON.stringify(diagnostic058,null,2)+'\n\nObservação: esta verificação não consulta contas do Firebase Authentication.';
   }catch(e){out.textContent='Falha na verificação: '+error(e)}finally{busy(btn,false)}
  };
  $('checkGroups').onclick=async()=>{try{let n=0;const b=writeBatch(db);for(let i=1;i<=6;i++){const r=ref('seminarios_groups',i),s=await getDoc(r);if(!s.exists())throw Error('Grupo '+i+' não existe no Firestore.');if(s.data().caseId!==String(i))throw Error('caseId incorreto no grupo '+i);if(!Object.hasOwn(s.data(),'members')){b.update(r,{members:{}});n++}}if(n)await b.commit();msg('Grupos verificados. Inicializados: '+n);await teacherData()}catch(x){msg(error(x),true)}};
