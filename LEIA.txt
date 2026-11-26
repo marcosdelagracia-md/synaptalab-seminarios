@@ -1,0 +1,1 @@
+Versão candidata, etapa 1. Substituir apenas app.js após teste em ambiente separado. Não altera regras. Remover vínculo residual manualmente pelo cartão da equipe. Bloquear conta é global. Não inclui edição simultânea nem privacidade de rascunhos. Backup do app.js anterior antes de publicar.
