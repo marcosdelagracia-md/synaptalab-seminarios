@@ -1,1 +1,5 @@
-Versão candidata, etapa 1. Substituir apenas app.js após teste em ambiente separado. Não altera regras. Remover vínculo residual manualmente pelo cartão da equipe. Bloquear conta é global. Não inclui edição simultânea nem privacidade de rascunhos. Backup do app.js anterior antes de publicar.
+Versão emergencial baseada no ZIP Etapa 1. Sem alterações nas regras ou dados.
+Antes de instalar: compare o app.js atualmente publicado com o original da Etapa 1; se diferente, não substitua sem revisão. Guarde uma cópia do original. Teste em ambiente separado quando a cota renovar. Não habilite billing.
+Substitua somente app.js após validação. Peça aos usuários que copiem rascunhos antes de atualizar a página. Monitoramento docente e atualização da versão compartilhada passam a ser manuais. O salvamento transacional continua protegendo contra sobrescrita concorrente. Consulte relatórios/revisões pelo botão Atualizar após salvar e copiar rascunhos.
+Teste login, escolha de grupo/equipe, salvamento, conflito entre duas contas, publicação, revisão, laudo e devolutiva. Observe Uso no Firebase. Se houver falha, restaure o app.js anterior; não altere dados nem regras.
+Verificação realizada: sintaxe JavaScript (Node). Não testado contra Firebase real; redução de leituras não medida.
