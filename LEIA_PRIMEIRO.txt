@@ -1,10 +1,1 @@
-SYNAPTALAB — ATUALIZAÇÃO DE VALIDAÇÃO — 22/11/2026
-
-1. Faça backup do app.js atual do GitHub antes de qualquer alteração.
-2. Este app.js consolida a versão corrigida recebida e acrescenta ao painel do professor o botão VERIFICAR CADASTROS (somente leitura).
-3. O botão compara seminarios_students, seminarios_codes e seminarios_instruction_acceptances. Não consulta Firebase Authentication, não apaga dados, não corrige automaticamente.
-4. O index.html existente usa ./app.js. Substituir app.js no GitHub muda o código carregado quando o Pages publicar.
-5. BLOQUEIO IMPORTANTE: o arquivo de regras local firestore_synaptalab_atualizado.rules exige active:true na criação, enquanto este app cria active:false para aprovação do professor. NÃO PUBLIQUE novas inscrições antes de conferir as regras realmente implantadas no console Firebase. Não substitua regras cegamente.
-6. A exclusão definitiva de usuários NÃO foi implementada neste pacote. Ela exige backend administrativo protegido (Firebase Admin SDK) e backup/validação de registros acadêmicos. Não adicione chave privada ao GitHub.
-7. Homologue em conta de teste antes de liberar a turma: login do professor; verificação de cadastros; aluno já ativo; cadastro novo após compatibilizar regras; aceite; grupo; documentos; avaliações.
-8. Nenhuma alteração foi feita remotamente no GitHub ou Firebase por este pacote.
+CANDIDATA A HOMOLOGAÇÃO. Base: SynaptaLab_Integridade.zip. Substituir somente app.js após backup e teste separado. Não alterar regras. Laudo visível desde o início; somente pareceres marcados publicados entram na visão do aluno. Publicações antigas continuam vinculadas ao texto atual da equipe; não há snapshot independente nem sigilo de rascunho garantido pelas regras atuais. Atualização manual do laudo para evitar listeners. Testar navegação, salvamento, publicação, revisão, aceite e isolamento entre grupos antes de produção. Não restaura textos apagados.
